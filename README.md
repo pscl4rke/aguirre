@@ -12,6 +12,12 @@ Consequently you should add the following line to your
 
     git+https://github.com/pscl4rke/aguirre.git
 
+## Integrations
+
+There are some integrations into frameworks inside
+`aguirre.integrations`.
+Their usage is documented in the module docstrings.
+
 ## Licence
 
 This code is copyright P. S. Clarke and is licensed under
