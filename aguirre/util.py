@@ -12,7 +12,7 @@ def load_from_package(basedir: str, package: str, version: str,
     if not os.path.exists(srcpath):
         return None  # scriptkiddie noise
     try:
-        return load_from_tarball(srcpath, f"package/dist/{resourcepath}")
+        return load_from_tarball(srcpath, f"package/{resourcepath}")
     except KeyError:
         return None  # file not in archive
 
