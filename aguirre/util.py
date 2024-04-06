@@ -8,7 +8,7 @@ import tarfile
 
 def load_from_package(basedir: str, package: str, version: str,
                       resourcepath: str) -> Optional[bytes]:
-    srcpath = f"vendor/{package}-{version}.tgz"
+    srcpath = f"{basedir}/{package}-{version}.tgz"
     if not os.path.exists(srcpath):
         return None  # scriptkiddie noise
     try:
