@@ -16,7 +16,10 @@ Consequently you should add the following line to your
 
 There are some integrations into frameworks inside
 `aguirre.integrations`.
-Their usage is documented in the module docstrings.
+Their usage is documented in the module docstrings...
+
+* [Flask](https://github.com/pscl4rke/aguirre/blob/master/aguirre/integrations/flask.py)
+* [Quart](https://github.com/pscl4rke/aguirre/blob/master/aguirre/integrations/quart.py)
 
 ## Licence
 
