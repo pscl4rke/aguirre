@@ -13,9 +13,18 @@ venv.testing:
 
 ####
 
-test-in-docker: test-in-docker-3.8-slim-bullseye
+docker-to-run += test-in-docker-3.7-slim-bullseye
+docker-to-run += test-in-docker-3.8-slim-bullseye
+docker-to-run += test-in-docker-3.9-slim-bullseye
+docker-to-run += test-in-docker-3.10-slim-bullseye
+test-in-docker: $(docker-to-run)
 
 test-in-docker-%:
+	@echo
+	@echo "===================================================="
+	@echo "Testing with python:$*"
+	@echo "===================================================="
+	@echo
 	docker run -t --rm 											\
 		--entrypoint /bin/sh									\
 		--workdir /root											\
@@ -24,7 +33,7 @@ test-in-docker-%:
 		-c '													\
 				pwd												\
 			&&	pip --no-cache-dir install .[testing]			\
-			&&	mypy aguirre									\
+			&&	mypy --cache-dir /dev/null aguirre				\
 			&&	python -m unittest discover tests/				\
 			&&	(pyroma . || true)								\
 		'
