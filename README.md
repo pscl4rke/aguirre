@@ -1,8 +1,9 @@
 
 # Aguirre
 
-**Warning: This is proof-of-concept code,
-and should not be depended upon yet for a production environment.**
+**Warning: The utility functions have been proven out,
+but the integrations have had limited usage.
+Treat them with caution.**
 
 ## Installation
 
