@@ -9,3 +9,22 @@ test:
 venv.testing:
 	python3 -m venv $@
 	$@/bin/pip install .[testing]
+
+
+####
+
+test-in-docker: test-in-docker-3.8-slim-bullseye
+
+test-in-docker-%:
+	docker run -t --rm 											\
+		--entrypoint /bin/sh									\
+		--workdir /root											\
+		--volume .:/root:ro										\
+		python:$* 												\
+		-c '													\
+				pwd												\
+			&&	pip --no-cache-dir install .[testing]			\
+			&&	mypy aguirre									\
+			&&	python -m unittest discover tests/				\
+			&&	(pyroma . || true)								\
+		'
