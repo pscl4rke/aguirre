@@ -37,15 +37,4 @@ test-in-docker-%:
 	@echo "Testing with python:$*"
 	@echo "===================================================="
 	@echo
-	docker run -t --rm 											\
-		--entrypoint /bin/sh									\
-		--workdir /root											\
-		--volume .:/root:ro										\
-		python:$* 												\
-		-c '													\
-				pwd												\
-			&&	pip --no-cache-dir install .[testing]			\
-			&&	mypy --cache-dir /dev/null aguirre				\
-			&&	python -m unittest discover tests/				\
-			&&	(pyroma . || true)								\
-		'
+	./poc-ephemerun.sh "$*"
