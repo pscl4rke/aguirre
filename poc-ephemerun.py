@@ -1,12 +1,15 @@
 #!/usr/bin/python3
 
 
+from typing import List
+
+import argparse
 import subprocess
 import sys
 import time
 
 
-SHELL_COMMANDS = [
+SHELL_COMMANDS = [  # FIXME
     "pwd",
     "pip --no-cache-dir install .[testing]",
     "mypy --cache-dir /dev/null aguirre",
@@ -15,46 +18,55 @@ SHELL_COMMANDS = [
 ]
 
 
-def setUp(ctrname: str, image: str) -> None:
-    args = [
-        "docker", "run",
-        "--rm",
-        "--detach",
-        "--name", ctrname,
-        "--entrypoint", "/bin/sh",
-        "--workdir", "/root",
-        "--volume", ".:/root:ro",
-        image,
-        "-c", "sleep 999999",
-    ]
-    subprocess.run(args, check=True)
+class DockerBackend:
+
+    def __init__(self, ctrname: str) -> None:
+        self.ctrname = ctrname
+
+    def set_up(self, image: str) -> None:
+        args = [
+            "docker", "run",
+            "--rm",
+            "--detach",
+            "--name", self.ctrname,
+            "--entrypoint", "/bin/sh",  # FIXME
+            "--workdir", "/root",  # FIXME
+            "--volume", ".:/root:ro",  # FIXME
+            image,
+            "-c", "sleep 999999",  # FIXME
+        ]
+        subprocess.run(args, check=True)
+
+    def run_command(self, command: str) -> None:
+        args = [
+            "docker", "exec", self.ctrname, "/bin/sh", "-c", command,
+        ]
+        subprocess.run(args, check=True)
+
+    def tear_down(self) -> None:
+        args = [
+            "docker", "container", "kill", self.ctrname,
+        ]
+        subprocess.run(args, check=True)
+        time.sleep(5)
 
 
-def runCommand(ctrname: str, command: str) -> None:
-    args = [
-        "docker", "exec", ctrname, "/bin/sh", "-c", command,
-    ]
-    subprocess.run(args, check=True)
-
-
-def tearDown(ctrname: str) -> None:
-    args = [
-        "docker", "container", "kill", ctrname,
-    ]
-    subprocess.run(args, check=True)
-    time.sleep(5)
+def parse_args(args: List[str]) -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-i", "--image", required=True)
+    return parser.parse_args(args)
 
 
 def main() -> None:
-    ctrname = "ephemerun-poc"
-    imageversion = sys.argv[1]
-    image = f"python:{imageversion}"
+    ctrname = "ephemerun-poc"  # FIXME
+    options = parse_args(sys.argv[1:])
+    backend = DockerBackend(ctrname)
     try:
-        setUp(ctrname, image)
+        backend.set_up(options.image)
         for command in SHELL_COMMANDS:
-            runCommand(ctrname, command)
+            backend.run_command(command)
     finally:
-        tearDown(ctrname)
+        backend.tear_down()
 
 
 if __name__ == "__main__":
