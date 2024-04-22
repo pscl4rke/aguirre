@@ -3,6 +3,9 @@
 
 from typing import List, Optional
 
+import logging
+LOG = logging.getLogger("ephemerun")
+
 import argparse
 import subprocess
 import sys
@@ -48,6 +51,7 @@ class DockerBackend:
         self.workdir = workdir
 
     def set_up(self, image: str) -> None:
+        LOG.info("Starting: %s" % self.ctrname)
         args = [
             "docker", "run",
             "--rm",
@@ -61,6 +65,7 @@ class DockerBackend:
         subprocess.run(args, check=True)
 
     def run_command(self, command: str) -> None:
+        LOG.info("Run: %s" % command)
         args = ["docker", "exec"]
         if self.workdir is not None:
             args.extend(["--workdir", self.workdir])
@@ -68,6 +73,7 @@ class DockerBackend:
         subprocess.run(args, check=True)
 
     def tear_down(self) -> None:
+        LOG.info("Stopping: %s" % self.ctrname)
         args = [
             "docker", "container", "kill", self.ctrname,
         ]
@@ -82,6 +88,7 @@ def parse_args(args: List[str]) -> argparse.Namespace:
 
 
 def main() -> None:
+    logging.basicConfig(level="INFO", format="[ephemerun] %(message)s")
     ctrname = "ephemerun-poc"  # FIXME
     options = parse_args(sys.argv[1:])
     backend = DockerBackend(ctrname)
@@ -89,6 +96,10 @@ def main() -> None:
         backend.set_up(options.image)
         for action in ACTIONS:
             action.apply(backend)
+    except subprocess.CalledProcessError as exc:
+        LOG.error("Error: %s" % exc)
+    except subprocess.TimeoutExpired as exc:
+        LOG.error("Timeout: %s" % exc)
     finally:
         backend.tear_down()
 
