@@ -11,6 +11,8 @@ import time
 
 SHELL_COMMANDS = [  # FIXME
     "pwd",
+    "cp -air ./src/* .",
+    "ls",
     "pip --no-cache-dir install .[testing]",
     "mypy --cache-dir /dev/null aguirre",
     "python -m unittest discover tests/",
@@ -31,7 +33,7 @@ class DockerBackend:
             "--name", self.ctrname,
             "--entrypoint", "/bin/sh",  # FIXME
             "--workdir", "/root",  # FIXME
-            "--volume", ".:/root:ro",  # FIXME
+            "--volume", ".:/root/src:ro",  # FIXME
             image,
             "-c", "sleep 999999",  # FIXME
         ]
