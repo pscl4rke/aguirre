@@ -32,12 +32,11 @@ class Workdir:
 
 ACTIONS = [  # FIXME
     Workdir("/root"),
-    Shell("pwd"),
     Shell("cp -air ./src/* ."),
-    Shell("ls"),
     Shell("pip --no-cache-dir install .[testing]"),
     Shell("mypy --cache-dir /dev/null aguirre"),
-    Shell("python -m unittest discover tests/"),
+    Shell("coverage run -m unittest discover tests/"),
+    Shell("coverage report -m"),
     Shell("(pyroma . || true)"),
 ]
 
@@ -48,6 +47,7 @@ class DockerBackend:
         self.ctrname = ctrname
 
     def set_workdir(self, workdir: Optional[str]):
+        LOG.info("Workdir: %s" % workdir)
         self.workdir = workdir
 
     def set_up(self, image: str) -> None:
@@ -62,7 +62,7 @@ class DockerBackend:
             image,
             "-c", "sleep 999999",  # FIXME
         ]
-        subprocess.run(args, check=True)
+        subprocess.run(args, check=True, stdout=subprocess.DEVNULL)
 
     def run_command(self, command: str) -> None:
         LOG.info("Run: %s" % command)
@@ -77,7 +77,7 @@ class DockerBackend:
         args = [
             "docker", "container", "kill", self.ctrname,
         ]
-        subprocess.run(args, check=True)
+        subprocess.run(args, check=True, stdout=subprocess.DEVNULL)
         time.sleep(5)
 
 
@@ -96,6 +96,8 @@ def main() -> None:
         backend.set_up(options.image)
         for action in ACTIONS:
             action.apply(backend)
+    except KeyboardInterrupt:
+        LOG.error("Interrupted")
     except subprocess.CalledProcessError as exc:
         LOG.error("Error: %s" % exc)
     except subprocess.TimeoutExpired as exc:
