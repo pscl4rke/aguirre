@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 
-from typing import List
+from typing import List, Optional
 
 import argparse
 import subprocess
@@ -9,14 +9,33 @@ import sys
 import time
 
 
-SHELL_COMMANDS = [  # FIXME
-    "pwd",
-    "cp -air ./src/* .",
-    "ls",
-    "pip --no-cache-dir install .[testing]",
-    "mypy --cache-dir /dev/null aguirre",
-    "python -m unittest discover tests/",
-    "(pyroma . || true)",
+class Shell:
+
+    def __init__(self, command):
+        self.command = command
+
+    def apply(self, backend):
+        backend.run_command(self.command)
+
+
+class Workdir:
+
+    def __init__(self, workdir):
+        self.workdir = workdir
+
+    def apply(self, backend):
+        backend.set_workdir(self.workdir)
+
+
+ACTIONS = [  # FIXME
+    Workdir("/root"),
+    Shell("pwd"),
+    Shell("cp -air ./src/* ."),
+    Shell("ls"),
+    Shell("pip --no-cache-dir install .[testing]"),
+    Shell("mypy --cache-dir /dev/null aguirre"),
+    Shell("python -m unittest discover tests/"),
+    Shell("(pyroma . || true)"),
 ]
 
 
@@ -24,7 +43,9 @@ class DockerBackend:
 
     def __init__(self, ctrname: str) -> None:
         self.ctrname = ctrname
-        self.workdir = "/root"  # FIXME
+
+    def set_workdir(self, workdir: Optional[str]):
+        self.workdir = workdir
 
     def set_up(self, image: str) -> None:
         args = [
@@ -44,7 +65,6 @@ class DockerBackend:
         if self.workdir is not None:
             args.extend(["--workdir", self.workdir])
         args.extend([self.ctrname, "/bin/sh", "-c", command])
-        print(args)
         subprocess.run(args, check=True)
 
     def tear_down(self) -> None:
@@ -67,8 +87,8 @@ def main() -> None:
     backend = DockerBackend(ctrname)
     try:
         backend.set_up(options.image)
-        for command in SHELL_COMMANDS:
-            backend.run_command(command)
+        for action in ACTIONS:
+            action.apply(backend)
     finally:
         backend.tear_down()
 
