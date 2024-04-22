@@ -96,6 +96,7 @@ def main() -> None:
         backend.set_up(options.image)
         for action in ACTIONS:
             action.apply(backend)
+        LOG.info("All actions completed successfully")
     except KeyboardInterrupt:
         LOG.error("Interrupted")
     except subprocess.CalledProcessError as exc:
