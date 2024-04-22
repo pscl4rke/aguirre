@@ -24,6 +24,7 @@ class DockerBackend:
 
     def __init__(self, ctrname: str) -> None:
         self.ctrname = ctrname
+        self.workdir = "/root"  # FIXME
 
     def set_up(self, image: str) -> None:
         args = [
@@ -32,7 +33,6 @@ class DockerBackend:
             "--detach",
             "--name", self.ctrname,
             "--entrypoint", "/bin/sh",  # FIXME
-            "--workdir", "/root",  # FIXME
             "--volume", ".:/root/src:ro",  # FIXME
             image,
             "-c", "sleep 999999",  # FIXME
@@ -40,9 +40,11 @@ class DockerBackend:
         subprocess.run(args, check=True)
 
     def run_command(self, command: str) -> None:
-        args = [
-            "docker", "exec", self.ctrname, "/bin/sh", "-c", command,
-        ]
+        args = ["docker", "exec"]
+        if self.workdir is not None:
+            args.extend(["--workdir", self.workdir])
+        args.extend([self.ctrname, "/bin/sh", "-c", command])
+        print(args)
         subprocess.run(args, check=True)
 
     def tear_down(self) -> None:
