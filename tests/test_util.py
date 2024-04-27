@@ -10,6 +10,21 @@ def example_dir():
     return join(dirname(__file__), "examples")
 
 
+class TestHighLevelLoading(unittest.TestCase):
+
+    def test_loading_from_a_tarball(self):
+        x = util.load_from_package(example_dir(), "vanjs-core", "1.5.0", "src/van.js")
+        self.assertEqual(len(x), 4917)
+
+    def test_missing_from_a_tarball(self):
+        x = util.load_from_package(example_dir(), "vanjs-core", "1.5.0", "other.js")
+        self.assertIsNone(x)
+
+    def test_from_a_package_that_doesnt_exist(self):
+        x = util.load_from_package(example_dir(), "vanjs-core", "9.9.9", "src/van.js")
+        self.assertIsNone(x)
+
+
 class TestTarballLowLevelAccess(unittest.TestCase):
 
     def setUp(self):
