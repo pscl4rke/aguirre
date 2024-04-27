@@ -53,7 +53,7 @@ class DockerBackend:
         LOG.info("Workdir: %s" % workdir)
         self.workdir = workdir
 
-    def set_up(self, image: str) -> None:
+    def set_up(self, image: str, volumes: List[str]) -> None:
         LOG.info("Starting: %s" % self.ctrname)
         args = [
             "docker", "run",
@@ -61,10 +61,13 @@ class DockerBackend:
             "--detach",
             "--name", self.ctrname,
             "--entrypoint", self.shell,
-            "--volume", ".:/root/src:ro",  # FIXME
+        ]
+        for volume in volumes:
+            args.extend(("--volume", volume))
+        args.extend([
             image,
             "-c", self.backgroundjob,
-        ]
+        ])
         subprocess.run(args, check=True, stdout=subprocess.DEVNULL)
 
     def run_command(self, command: str) -> None:
@@ -91,6 +94,7 @@ def suggest_container_name() -> str:
 def parse_args(args: List[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("-i", "--image", required=True)
+    parser.add_argument("-v", "--volume", action="append", dest="volumes")
     return parser.parse_args(args)
 
 
@@ -100,7 +104,7 @@ def main() -> None:
     ctrname = suggest_container_name()
     backend = DockerBackend(ctrname)
     try:
-        backend.set_up(options.image)
+        backend.set_up(options.image, options.volumes or [])
         for action in ACTIONS:
             action.apply(backend)
         LOG.info("All actions completed successfully")

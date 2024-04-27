@@ -40,4 +40,4 @@ test-in-docker-%:
 	@echo "Testing with python:$*"
 	@echo "===================================================="
 	@echo
-	./poc-ephemerun.py -i "python:$*"
+	./poc-ephemerun.py -i "python:$*" -v ".:/root/src:ro"
