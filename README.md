@@ -63,3 +63,6 @@ Their usage is documented in the module docstrings...
 
 This code is copyright P. S. Clarke and is licensed under
 the BSD-3-Clause licence.
+
+The test suite contains real-world example files.
+These are covered by their own embedded licences.
