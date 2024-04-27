@@ -45,6 +45,9 @@ class DockerBackend:
 
     def __init__(self, ctrname: str) -> None:
         self.ctrname = ctrname
+        # These might need overriding for some base images:
+        self.shell = "/bin/sh"
+        self.backgroundjob = "sleep 999999"
 
     def set_workdir(self, workdir: Optional[str]):
         LOG.info("Workdir: %s" % workdir)
@@ -57,10 +60,10 @@ class DockerBackend:
             "--rm",
             "--detach",
             "--name", self.ctrname,
-            "--entrypoint", "/bin/sh",  # FIXME
+            "--entrypoint", self.shell,
             "--volume", ".:/root/src:ro",  # FIXME
             image,
-            "-c", "sleep 999999",  # FIXME
+            "-c", self.backgroundjob,
         ]
         subprocess.run(args, check=True, stdout=subprocess.DEVNULL)
 
@@ -69,7 +72,7 @@ class DockerBackend:
         args = ["docker", "exec"]
         if self.workdir is not None:
             args.extend(["--workdir", self.workdir])
-        args.extend([self.ctrname, "/bin/sh", "-c", command])
+        args.extend([self.ctrname, self.shell, "-c", command])
         subprocess.run(args, check=True)
 
     def tear_down(self) -> None:
