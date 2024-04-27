@@ -7,9 +7,9 @@ import logging
 LOG = logging.getLogger("ephemerun")
 
 import argparse
+import random
 import subprocess
 import sys
-import time
 
 
 class Shell:
@@ -78,7 +78,11 @@ class DockerBackend:
             "docker", "container", "kill", self.ctrname,
         ]
         subprocess.run(args, check=True, stdout=subprocess.DEVNULL)
-        time.sleep(5)
+
+
+def suggest_container_name() -> str:
+    nonce = "".join(random.choice("0123456789abcdef") for _ in range(10))
+    return f"ephemerun-{nonce}"
 
 
 def parse_args(args: List[str]) -> argparse.Namespace:
@@ -89,8 +93,8 @@ def parse_args(args: List[str]) -> argparse.Namespace:
 
 def main() -> None:
     logging.basicConfig(level="INFO", format="[ephemerun] %(message)s")
-    ctrname = "ephemerun-poc"  # FIXME
     options = parse_args(sys.argv[1:])
+    ctrname = suggest_container_name()
     backend = DockerBackend(ctrname)
     try:
         backend.set_up(options.image)
