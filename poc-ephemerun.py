@@ -82,7 +82,7 @@ def suggest_container_name() -> str:
 
 def parse_args(args: List[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    # parser.set_defaults(...)  # FIXME
+    parser.set_defaults(volumes=[], actions=[])
     parser.add_argument("-i", "--image", required=True)
     parser.add_argument("-v", "--volume", action="append", dest="volumes")
     parser.add_argument("-W", "--workdir", action="append", dest="actions", type=Workdir)
@@ -96,7 +96,7 @@ def main() -> None:
     ctrname = suggest_container_name()
     backend = DockerBackend(ctrname)
     try:
-        backend.set_up(options.image, options.volumes or [])
+        backend.set_up(options.image, options.volumes)
         for action in options.actions:
             action.apply(backend)
         LOG.info("All actions completed successfully")
