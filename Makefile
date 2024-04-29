@@ -40,4 +40,13 @@ test-in-docker-%:
 	@echo "Testing with python:$*"
 	@echo "===================================================="
 	@echo
-	./poc-ephemerun.py -i "python:$*" -v ".:/root/src:ro"
+	./poc-ephemerun.py \
+		-i "python:$*" \
+		-v ".:/root/src:ro" \
+		-W "/root" \
+		-S "cp -air ./src/* ." \
+		-S "pip --no-cache-dir install .[testing]" \
+		-S "mypy --cache-dir /dev/null aguirre" \
+		-S "coverage run -m unittest discover tests/" \
+		-S "coverage report -m" \
+		-S "(pyroma . || true)"

@@ -30,17 +30,6 @@ class Workdir:
         backend.set_workdir(self.workdir)
 
 
-ACTIONS = [  # FIXME
-    Workdir("/root"),
-    Shell("cp -air ./src/* ."),
-    Shell("pip --no-cache-dir install .[testing]"),
-    Shell("mypy --cache-dir /dev/null aguirre"),
-    Shell("coverage run -m unittest discover tests/"),
-    Shell("coverage report -m"),
-    Shell("(pyroma . || true)"),
-]
-
-
 class DockerBackend:
 
     def __init__(self, ctrname: str) -> None:
@@ -93,8 +82,11 @@ def suggest_container_name() -> str:
 
 def parse_args(args: List[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
+    # parser.set_defaults(...)  # FIXME
     parser.add_argument("-i", "--image", required=True)
     parser.add_argument("-v", "--volume", action="append", dest="volumes")
+    parser.add_argument("-W", "--workdir", action="append", dest="actions", type=Workdir)
+    parser.add_argument("-S", "--shellcmd", action="append", dest="actions", type=Shell)
     return parser.parse_args(args)
 
 
@@ -105,7 +97,7 @@ def main() -> None:
     backend = DockerBackend(ctrname)
     try:
         backend.set_up(options.image, options.volumes or [])
-        for action in ACTIONS:
+        for action in options.actions:
             action.apply(backend)
         LOG.info("All actions completed successfully")
     except KeyboardInterrupt:
