@@ -59,6 +59,14 @@ Their usage is documented in the module docstrings...
 * [Flask](https://github.com/pscl4rke/aguirre/blob/master/aguirre/integrations/flask.py)
 * [Quart](https://github.com/pscl4rke/aguirre/blob/master/aguirre/integrations/quart.py)
 
+## Development and Testing
+
+This codebase uses
+[ephemerun](https://github.com/pscl4rke/ephemerun)
+to test against multiple Python versions.
+(It's a bit like Tox,
+except is uses containers for isolation rather than virtualenvs.)
+
 ## Licence
 
 This code is copyright P. S. Clarke and is licensed under
