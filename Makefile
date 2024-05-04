@@ -9,7 +9,7 @@ test: | venv.testing
 
 venv.testing:
 	python3 -m venv $@
-	$@/bin/pip install .[testing]
+	$@/bin/pip install -e '.[testing]'
 
 
 ####
@@ -17,12 +17,11 @@ venv.testing:
 release:
 	test ! -d dist
 	python3 setup.py sdist bdist_wheel
-	ls -la dist
 	check-wheel-contents dist
-	twine check dist/*.whl dist/*.tar.gz
+	twine check dist/*
 	PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring twine upload dist/*
 	mv -i build* *.egg-info dist/.
-	mv dist dist.$$(date +%Y%m%d.%H%M%S)
+	mv dist dist.$$(date +%Y-%m-%d.%H%M%S)
 
 ####
 
