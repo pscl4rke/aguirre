@@ -67,6 +67,11 @@ to test against multiple Python versions.
 (It's a bit like Tox,
 except is uses containers for isolation rather than virtualenvs.)
 
+## Roadmap
+
+* Add (some) Django support
+* Handle `pathlib.Path` arguments
+
 ## Licence
 
 This code is copyright P. S. Clarke and is licensed under
