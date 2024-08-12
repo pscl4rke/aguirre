@@ -70,7 +70,7 @@ except is uses containers for isolation rather than virtualenvs.)
 
 ## Roadmap
 
-* Add (some) Django support
+* Better Django support
 * Handle `pathlib.Path` arguments
 
 ## Licence
