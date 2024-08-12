@@ -19,7 +19,7 @@ Then add a pattern to your main `urls.py` file:
 
 You can use the `url` tag in templates to reference resources:
 
-    <link rel="stylesheet" href="{% url "aguirre" "leaflet", "1.7.1", "dist/leaflet.css" %} />
+    <link rel="stylesheet" href="{% url "aguirre" "leaflet" "1.7.1" "dist/leaflet.css" %} />
 
 NOTE: This does not integrate with `collectstatic`!
 
