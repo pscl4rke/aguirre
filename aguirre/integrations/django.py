@@ -33,7 +33,7 @@ from django.http import Http404
 from aguirre.util import load_from_package, guess_mime_type
 
 
-def aguirre(req: Req, package: str, version: str, resourcepath: str, basedir: str) -> Rsp:
+def view(req: Req, package: str, version: str, resourcepath: str, basedir: str) -> Rsp:
     content = load_from_package(basedir, package, version, resourcepath)
     if content is None:
         raise Http404()
