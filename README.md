@@ -58,6 +58,7 @@ Their usage is documented in the module docstrings...
 
 * [Flask](https://github.com/pscl4rke/aguirre/blob/master/aguirre/integrations/flask.py)
 * [Quart](https://github.com/pscl4rke/aguirre/blob/master/aguirre/integrations/quart.py)
+* [Django](https://github.com/pscl4rke/aguirre/blob/master/aguirre/integrations/django.py) (Partial!)
 
 ## Development and Testing
 
