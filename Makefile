@@ -41,7 +41,7 @@ test-in-docker-%:
 	@echo
 	ephemerun \
 		-i "python:$*" \
-		-v ".:/root/src:ro" \
+		-v "`pwd`:/root/src:ro" \
 		-W "/root" \
 		-S "cp -air ./src/* ." \
 		-S "pip --no-cache-dir install .[testing]" \
