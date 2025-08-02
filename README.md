@@ -72,6 +72,7 @@ except is uses containers for isolation rather than virtualenvs.)
 
 * Better Django support
 * Handle `pathlib.Path` arguments
+* Set headers etc for caching middleware/frontends
 
 ## Licence
 
