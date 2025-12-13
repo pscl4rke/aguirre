@@ -1,6 +1,6 @@
 
 
-from typing import Optional
+from typing import Iterable, Optional, Tuple
 
 import os
 import tarfile
@@ -30,3 +30,7 @@ def guess_mime_type(path: str) -> str:
     if path.endswith(".css"):
         return "text/css"  # firefox won't load without this set
     return "text/html"  # is there a better default?!?
+
+
+def caching_headers() -> Iterable[Tuple[str, str]]:
+    yield ("Cache-Control", "public, max-age=31536000, immutable")

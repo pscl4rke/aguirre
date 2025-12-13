@@ -41,6 +41,8 @@ desired file straight out of the tarball:
 
 Sure, it's not the most scalable solution.
 But it's a great way to quickly get things moving.
+And if you have a frontend (edge) server configured to do
+caching you may find it can handle the scaling for you!
 
 ## Installation
 
@@ -72,7 +74,8 @@ except is uses containers for isolation rather than virtualenvs.)
 
 * Better Django support
 * Handle `pathlib.Path` arguments
-* Set headers etc for caching middleware/frontends
+* Prove the headers etc for caching middleware/frontends
+* Make sure no `Set-Cookie` headers exist to stop caching proxies
 
 ## Licence
 

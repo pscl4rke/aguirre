@@ -50,3 +50,11 @@ class TestMimeTypes(unittest.TestCase):
         self.assertEqual(util.guess_mime_type("/foo/thing.js"), "text/javascript")
         self.assertEqual(util.guess_mime_type("/foo/thing.css"), "text/css")
         self.assertEqual(util.guess_mime_type("/foo/thing.xyz"), "text/html")
+
+
+class TestCaching(unittest.TestCase):
+
+    def test_cache_control(self):
+        headers = dict(util.caching_headers())
+        self.assertIn("public", headers["Cache-Control"])
+        self.assertIn("immutable", headers["Cache-Control"])
