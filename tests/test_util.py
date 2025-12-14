@@ -1,5 +1,6 @@
 
 
+import datetime
 from os.path import dirname, join
 import unittest
 
@@ -58,3 +59,9 @@ class TestCaching(unittest.TestCase):
         headers = dict(util.caching_headers())
         self.assertIn("public", headers["Cache-Control"])
         self.assertIn("immutable", headers["Cache-Control"])
+
+    def test_expires(self):
+        headers = dict(util.caching_headers())
+        expires = datetime.datetime.strptime(headers["Expires"], "%a, %d %b %Y %H:%M:%S GMT")
+        future = datetime.datetime.now() + datetime.timedelta(days=250)
+        self.assertGreater(expires, future)

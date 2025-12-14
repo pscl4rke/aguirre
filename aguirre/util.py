@@ -2,6 +2,7 @@
 
 from typing import Iterable, Optional, Tuple
 
+import datetime
 import os
 import tarfile
 
@@ -34,3 +35,5 @@ def guess_mime_type(path: str) -> str:
 
 def caching_headers() -> Iterable[Tuple[str, str]]:
     yield ("Cache-Control", "public, max-age=31536000, immutable")
+    expiry = datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(seconds=31536000)
+    yield ("Expires", expiry.strftime("%a, %d %b %Y %H:%M:%S GMT"))
