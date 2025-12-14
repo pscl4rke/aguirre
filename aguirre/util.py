@@ -6,6 +6,12 @@ import datetime
 import os
 import tarfile
 
+try:  # introduced in 3.11
+    from datetime import UTC  # type: ignore
+except ImportError:
+    from datetime import timezone
+    UTC = timezone.utc
+
 
 def load_from_package(basedir: str, package: str, version: str,
                       resourcepath: str) -> Optional[bytes]:
@@ -35,5 +41,5 @@ def guess_mime_type(path: str) -> str:
 
 def caching_headers() -> Iterable[Tuple[str, str]]:
     yield ("Cache-Control", "public, max-age=31536000, immutable")
-    expiry = datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(seconds=31536000)
+    expiry = datetime.datetime.now(tz=UTC) + datetime.timedelta(seconds=31536000)
     yield ("Expires", expiry.strftime("%a, %d %b %Y %H:%M:%S GMT"))
