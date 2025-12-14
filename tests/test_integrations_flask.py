@@ -17,8 +17,11 @@ class TestHeaders(unittest.TestCase):
         client = APP.test_client()
         x = client.get("/vendor/vanjs-core@1.5.0/src/van.js")
         self.assertTrue(x.status.startswith("200 "))
+        self.assertIn("Cache-Control", x.headers)
+        self.assertIn("immutable", x.headers["Cache-Control"])
 
     def test_absent(self):
         client = APP.test_client()
         x = client.get("/vendor/vanjs-core@1.5.0/src/missing.js")
         self.assertTrue(x.status.startswith("404 "))
+        # FIXME... what caching *do* we want for failures?

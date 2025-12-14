@@ -15,7 +15,7 @@ Repeat if necessary for multiple directories.
 import flask
 from flask.typing import ResponseReturnValue as Rsp
 
-from aguirre.util import load_from_package, guess_mime_type
+from aguirre.util import load_from_package, guess_mime_type, caching_headers
 
 
 def view(basedir: str, package: str, version: str, resourcepath: str) -> Rsp:
@@ -24,6 +24,7 @@ def view(basedir: str, package: str, version: str, resourcepath: str) -> Rsp:
         return flask.abort(404)
     response = flask.make_response(content)
     response.mimetype = guess_mime_type(resourcepath)
+    response.headers.update(caching_headers())
     return response
 
 

@@ -15,7 +15,7 @@ Repeat if necessary for multiple directories.
 import quart
 from quart.typing import ResponseReturnValue as Rsp
 
-from aguirre.util import load_from_package, guess_mime_type
+from aguirre.util import load_from_package, guess_mime_type, caching_headers
 
 
 async def view(basedir: str, package: str, version: str, resourcepath: str) -> Rsp:
@@ -24,6 +24,7 @@ async def view(basedir: str, package: str, version: str, resourcepath: str) -> R
         return quart.abort(404)
     response = await quart.make_response(content)
     response.mimetype = guess_mime_type(resourcepath)
+    response.headers.update(caching_headers())
     return response
 
 
