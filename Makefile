@@ -16,6 +16,15 @@ venv.testing:
 
 ####
 
+tagged-commit: version != python3 setup.py --version
+tagged-commit:
+	git diff | grep '^+__version__'
+	git add .
+	git commit -m "Release $(version)"
+	git tag -a -m "Release $(version)" "$(version)"
+	@echo
+	@echo "Now remember to push!"
+
 release: export PYTHON_KEYRING_BACKEND := keyring.backends.null.Keyring
 release:
 	test '$(shell python3 setup.py --version)' = '$(shell git describe)'
