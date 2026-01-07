@@ -30,7 +30,7 @@ from django.http import HttpRequest as Req
 from django.http import HttpResponse as Rsp
 from django.http import Http404
 
-from aguirre.util import load_from_package, guess_mime_type
+from aguirre.util import load_from_package, guess_mime_type, caching_headers
 
 
 def view(req: Req, package: str, version: str, resourcepath: str, basedir: str) -> Rsp:
@@ -39,4 +39,6 @@ def view(req: Req, package: str, version: str, resourcepath: str, basedir: str) 
         raise Http404()
     mimetype = guess_mime_type(resourcepath)
     response = Rsp(content=content, content_type=mimetype)
+    for header_key, header_value in caching_headers():
+        response.headers[header_key] = header_value
     return response
