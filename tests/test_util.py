@@ -48,8 +48,12 @@ class TestTarballLowLevelAccess(unittest.TestCase):
 class TestMimeTypes(unittest.TestCase):
 
     def test_guessing_the_mimetype(self):
+        # Firefox can be VERY picky about these, and will ignore them if wrong
         self.assertEqual(util.guess_mime_type("/foo/thing.js"), "text/javascript")
         self.assertEqual(util.guess_mime_type("/foo/thing.css"), "text/css")
+        self.assertEqual(util.guess_mime_type("/foo/thing.svg"), "image/svg+xml")
+
+    def test_guessing_the_default_mimetype(self):
         self.assertEqual(util.guess_mime_type("/foo/thing.xyz"), "text/html")
 
 

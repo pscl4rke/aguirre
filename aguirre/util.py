@@ -32,10 +32,13 @@ def load_from_tarball(tarball: str, path: str) -> bytes:
 
 
 def guess_mime_type(path: str) -> str:
+    # FIXME: It would be better to just use the mimetypes module!
     if path.endswith(".js"):
         return "text/javascript"
     if path.endswith(".css"):
         return "text/css"  # firefox won't load without this set
+    if path.endswith(".svg"):
+        return "image/svg+xml"  # firefox won't load without this set
     return "text/html"  # is there a better default?!?
 
 
