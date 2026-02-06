@@ -54,7 +54,7 @@ class TestMimeTypes(unittest.TestCase):
         self.assertEqual(util.guess_mime_type("/foo/thing.svg"), "image/svg+xml")
 
     def test_guessing_the_default_mimetype(self):
-        self.assertEqual(util.guess_mime_type("/foo/thing.xyz"), "text/html")
+        self.assertEqual(util.guess_mime_type("/foo/thing.zzz"), "text/html")
 
 
 class TestCaching(unittest.TestCase):

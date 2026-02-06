@@ -3,6 +3,7 @@
 from typing import Iterable, Optional, Tuple
 
 import datetime
+import mimetypes
 import os
 import tarfile
 
@@ -32,14 +33,12 @@ def load_from_tarball(tarball: str, path: str) -> bytes:
 
 
 def guess_mime_type(path: str) -> str:
-    # FIXME: It would be better to just use the mimetypes module!
-    if path.endswith(".js"):
-        return "text/javascript"
-    if path.endswith(".css"):
-        return "text/css"  # firefox won't load without this set
-    if path.endswith(".svg"):
-        return "image/svg+xml"  # firefox won't load without this set
-    return "text/html"  # is there a better default?!?
+    # Browsers can be VERY picky and ignore files that have the wrong mimetype
+    # Python 3.13 deprecated `guess_type` in favour of `guess_file_type`
+    mimetype, encoding = mimetypes.guess_type(path)
+    if mimetype is None:
+        return "text/html"  # is there a better default?!?
+    return mimetype
 
 
 def caching_headers() -> Iterable[Tuple[str, str]]:
