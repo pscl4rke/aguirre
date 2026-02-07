@@ -23,7 +23,7 @@ tagged-commit:
 	git commit -m "Release $(version)"
 	git tag -a -m "Release $(version)" "$(version)"
 	@echo
-	@echo "Now remember to push!"
+	@echo "Now do a release, and then remember to push!"
 
 release: export PYTHON_KEYRING_BACKEND := keyring.backends.null.Keyring
 release:
