@@ -1,4 +1,7 @@
 
+# FIXME: calls to setup.py directly are now deprected, so I need to fix the --version usage
+#	https://packaging.python.org/en/latest/guides/modernize-setup-py-project/
+
 testdir := tests
 
 pre-release-checks: | venv.testing
@@ -29,11 +32,11 @@ release: export PYTHON_KEYRING_BACKEND := keyring.backends.null.Keyring
 release:
 	test '$(shell python3 setup.py --version)' = '$(shell git describe)'
 	test ! -d dist
-	python3 setup.py sdist bdist_wheel
+	pyproject-build
 	check-wheel-contents dist
 	twine check dist/*
 	twine upload dist/*
-	mv -i build* *.egg-info dist/.
+	mv -i *.egg-info dist/.
 	mv dist dist.$$(date +%Y-%m-%d.%H%M%S)
 
 ####
