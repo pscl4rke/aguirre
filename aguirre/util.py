@@ -9,7 +9,7 @@ import tarfile
 
 try:  # introduced in 3.11
     from datetime import UTC  # type: ignore
-except ImportError:
+except ImportError:  # pragma: no cover
     from datetime import timezone
     UTC = timezone.utc
 
@@ -38,6 +38,8 @@ def guess_mime_type(path: str) -> str:
     mimetype, encoding = mimetypes.guess_type(path)
     if mimetype is None:
         return "text/html"  # is there a better default?!?
+    if mimetype == "application/javascript":  # seen in Debian 11
+        return "text/javascript"  # pragma: no cover
     return mimetype
 
 
