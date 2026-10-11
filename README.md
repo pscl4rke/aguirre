@@ -3,13 +3,13 @@
 
 > Let Python webservers self-host JS/CSS/etc assets like unpkg does
 
-**Warning: The utility functions have been proven out,
+*Note: The utility functions are tested and have been proven out,
 but the integrations have had limited usage.
-Treat them with caution.**
+Treat them with caution.*
 
 When your Python application needs a Python dependency from PyPI
 you can lean on tools like `pip` and `venv` to manage that.
-But what if its a web application that needs a Javascript or
+But what if its a web application that needs a JavaScript or
 CSS dependency from NPM?
 Large applications run by large teams can justify elaborate
 build and deployment pipelines.
@@ -46,11 +46,13 @@ caching you may find it can handle the scaling for you!
 
 ## Installation
 
-This code is not currently on PyPI.
-Consequently you should add the following line to your
-`requirements.txt` file:
+Install the latest stable version with
 
-    git+https://github.com/pscl4rke/aguirre.git
+    $ pip install aguirre
+
+Or install the cutting-edge version with
+
+    $ pip install git+https://github.com/pscl4rke/aguirre.git
 
 ## Integrations
 
@@ -64,15 +66,22 @@ Their usage is documented in the module docstrings...
 
 ## Development and Testing
 
+You can quickly build a virtualenv and run the test suite with:
+
+    $ make test
+
 This codebase uses
 [ephemerun](https://github.com/pscl4rke/ephemerun)
 to test against multiple Python versions.
 (It's a bit like Tox,
 except is uses containers for isolation rather than virtualenvs.)
+To run the full suite against all supported versions use:
+
+    $ make test-in-container
 
 ## Roadmap
 
-* Better Django support
+* Better Django support (e.g. unpacking during `collectstatic`)
 * Handle `pathlib.Path` arguments
 * Prove the headers etc for caching middleware/frontends
 * Make sure no `Set-Cookie` headers exist to stop caching proxies
